@@ -1,0 +1,155 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style type = "text/css">
+        @font-face{
+			font-family:"test";
+			src: url(PinyonScript-Regular.ttf);
+		}
+        body{
+            font-family: test;
+            font-size: 60px;
+            background-image: url(background.gif);
+            background-repeat: "no-repeat";
+            background-size: 100%;
+        }
+        li{
+            display:inline;
+        }
+        #stage{
+            position: absolute;
+            left: 50%;
+            margin-left: -25%; 
+        }
+        .easybutton,.advancebutton,.hardbutton {
+        border-top: 1px solid #96d1f8;     
+        background: #178ad6;     
+        background: -webkit-linear-gradient(#94afc2, #178ad6);
+        background: -moz-linear-gradient(#94afc2, #178ad6);
+        background: -o-linear-gradient(#94afc2, #178ad6);
+        background: linear-gradient(#94afc2, #178ad6);     
+        padding: 9px 18px;     
+        -webkit-border-radius: 14px;     
+        -moz-border-radius: 14px;     
+        border-radius: 14px;     
+        -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;     
+        -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;     
+        box-shadow: rgba(0,0,0,1) 0 1px 0;     
+        text-shadow: rgba(0,0,0,.4) 0 1px 0;     
+        color: white;     
+        font-size: 22px;        
+        text-decoration: none;     
+        vertical-align: middle;
+        display:inline-block;
+        }
+        .easybutton:hover,.advancebutton:hover,.hardbutton:hover {      
+        border-top-color: #28597a;     
+        background: #28597a;     
+        color: #ffffff;}  
+    </style>
+</head>
+<body>
+    <div id="cursor" style="position:absolute; z-index:999; visibility: visible">
+    <img id="mouse" src="tool0.png" width="50px">
+    </div>
+    <script language="JavaScript">
+    function YY_Mousetrace(evnt) {
+        if (yyns4) {if (evnt.pageX) {yy_ml=evnt.pageX; yy_mt=evnt.pageY;} }
+        else{
+        yy_ml=(event.clientX + document.body.scrollLeft);
+         yy_mt=(event.clientY + document.body.scrollTop);
+    }
+        if (yy_tracescript)eval(yy_tracescript);
+    }
+    function m(){
+        document.all.cursor.style.left=yy_ml+10;
+        document.all.cursor.style.top=yy_mt+10;
+    }
+    var yyns4=window.Event?true:false; var yy_mt = 0; var yy_ml = 0;
+    if (yyns4) document.captureEvents(Event.MOUSEMOVE);
+    document.onmousemove = YY_Mousetrace;
+    yy_tracescript = 'm()';
+    </script>
+    <script>
+        var cgcount=1;
+        var change;
+        var timer;
+        var choose;
+        var second=0,t;
+        var item_click = new Array(400);
+        function start(){
+            for(var x=0;x<400;x++){
+                item_click[x]=0;
+            }
+            change=document.getElementById("change");
+            change.addEventListener("click",cgimg,false);
+        }
+        ///
+        function cgimg(){
+            cgcount++;
+            document.getElementById("mouse").setAttribute("src","tool"+cgcount%2+".png");
+        }
+        ///
+        function click(item){
+            alert("Game Over\n You spent"+second+"seconds to find the treasure");
+            item_click[item]++;
+            if(item_click[item]>3){
+                document.getElementById("poo"+item).setAttribute("src","blank.png");
+                if(item==choose){
+                    alert("Game Over\n You spent"+second+"seconds to find the treasure");
+                }
+            }
+        }
+        ///
+        function level(range){
+            document.getElementById("menu").style.display= "none";
+            var stage=document.getElementById("stage");
+            var display;
+            choose=Math.floor(Math.random()*range*range);
+            for(var i=0;i<range;i++){
+                display+="<ol>";
+                for(var i2=0;i2<range;i2++){
+                    display+="<li><img class='poo' id='poo"+(range*(i)+i2+1)+"' src = 'poo.png' height = '"+600/range+
+                    "px' width = '"+600/range+
+                    "px' onclick=click("+(range*(i)+i2+1)+")></li>";
+                }
+                display+="</ol>";
+            }
+            stage.innerHTML=display;
+            timer();
+            console.log(item_click);
+        }
+        ///
+        
+        ///
+        function timer(){
+            document.getElementById('timer').innerHTML="time:"+second;
+            second++;
+            t=setTimeout("timer()",1000);
+        } 
+        ///
+        function dmouse(){
+            var mouse=document.getElementById("mouse");
+            mouse.style.transform = "rotate(-30deg)";
+        }
+        function umouse(){
+            var mouse=document.getElementById("mouse");
+            mouse.style.transform = "rotate(30deg)";
+        }
+        window.addEventListener("load",start,false);
+    </script>
+    <div id = "stage"  onmousedown="dmouse()" onmouseup="umouse()" ></div>
+    <div id = "timer"></div>
+    <div id = "menu">
+    Game Mode:
+    <p><a href="#" onclick=level(5) class="easybutton">Easy</a>></p>
+    <p><a href="#" onclick="level(10)" class="advancebutton">Advance</a>></p>
+    <p><a href="#" onclick="level(20)" class="hardbutton">Hard</a>></p>
+    </div>
+    <input id = "change" type = "button" value = "Change weapon">
+    <div id = "gameover"></div>
+</body>
+</html>
